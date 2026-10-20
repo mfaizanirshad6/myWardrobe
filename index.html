@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f766e" />
+    <title>My Smart Wardrobe</title>
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --surface2: #eef1f4;
+            --text: #1a1d21;
+            --muted: #5c6570;
+            --border: #d8dee4;
+            --accent: #0f766e;
+            --accent-hover: #0d635d;
+            --danger: #c0392b;
+            --warn: #b7791f;
+            --ok: #2d6a4f;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .08);
+            --radius: 12px;
+            --font: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0e1114;
+            --surface: #1a1f24;
+            --surface2: #252b32;
+            --text: #e8eaed;
+            --muted: #9aa3ad;
+            --border: #3a424c;
+            --accent: #2dd4bf;
+            --accent-hover: #5eead4;
+            --danger: #f87171;
+            --warn: #fbbf24;
+            --ok: #6ee7b7;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100dvh;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 1.15rem;
+            margin: 0;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        nav.tabs {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding: 8px 12px;
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        nav.tabs button {
+            flex-shrink: 0;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        nav.tabs button.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        [data-theme="dark"] nav.tabs button.active {
+            color: #0e1114;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2,
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.05rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            min-height: 72px;
+            resize: vertical;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 560px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--accent);
+            color: #fff;
+        }
+
+        [data-theme="dark"] .btn {
+            color: #0e1114;
+        }
+
+        .btn.secondary {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn.danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn.sm {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .item-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--surface2);
+        }
+
+        .item-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: var(--border);
+        }
+
+        .item-card .body {
+            padding: 10px;
+        }
+
+        .item-card .title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .item-card .meta {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .item-card .actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .outfit-card {
+            border-left: 4px solid var(--accent);
+            padding: 12px;
+            margin-bottom: 12px;
+            background: var(--surface2);
+            border-radius: 8px;
+        }
+
+        .warn-box {
+            background: rgba(183, 121, 31, .15);
+            border: 1px solid var(--warn);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .ok-box {
+            background: rgba(45, 106, 79, .12);
+            border: 1px solid var(--ok);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .climate-pill {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .checkbox-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .checkbox-row input {
+            width: auto;
+            margin: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .modal-backdrop {
+                align-items: center;
+            }
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            max-width: 520px;
+            width: 100%;
+            max-height: 90dvh;
+            overflow-y: auto;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px 16px;
+        }
+
+        .score {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        ul.compact {
+            margin: 8px 0;
+            padding-left: 20px;
+            font-size: 0.9rem;
+        }
+
+        .color-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .color-chip {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .color-chip.selected {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    
+        .status-pill{font-size:.8rem;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);display:inline-flex;gap:6px;align-items:center}
+        .status-pill i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+        .status-pill.busy i{background:var(--warn)}.status-pill.err i{background:var(--danger)}
+        .tryon-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+        @media(max-width:700px){.tryon-wrap{grid-template-columns:1fr}}
+        .stage{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+        .stage canvas{width:100%;height:auto;display:block;touch-action:none;cursor:grab}
+        .pick{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:6px 10px;border-radius:999px;font-size:.85rem;cursor:pointer}
+        .pick.on{background:var(--accent);color:#fff;border-color:var(--accent)}.pick.dim{opacity:.55}
+        [data-theme="dark"] .pick.on{color:#0e1114}
+        .layer-row{margin-bottom:10px}.layer-row b{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+        .chip-row{display:flex;flex-wrap:wrap;gap:6px}
+        .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:400;max-width:90vw;font-size:.9rem;box-shadow:var(--shadow)}
+        .privacy{font-size:.8rem;color:var(--muted)}
+        input[type=range]{padding:0;margin-bottom:8px}
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>My Smart Wardrobe</h1>
+        <div class="header-actions">
+            <span class="climate-pill" id="climateDisplay">Season: —</span>
+            <span class="status-pill" id="saveStatus" title="Checking storage…"><i></i><span>Saved on this device</span></span>
+            <button type="button" class="btn sm secondary" id="themeToggle" aria-label="Toggle theme">🌓 Theme</button>
+        </div>
+    </header>
+    <nav class="tabs" role="tablist">
+        <button type="button" class="active" data-tab="wardrobe">Wardrobe</button>
+        <button type="button" data-tab="outfits">Outfits</button>
+        <button type="button" data-tab="tryon">Try-on</button>
+        <button type="button" data-tab="history">History</button>
+        <button type="button" data-tab="gaps">Gaps</button>
+        <button type="button" data-tab="settings">Settings</button>
+    </nav>
+
+    <main>
+        <section id="panel-wardrobe" class="panel active">
+            <div class="card">
+                <div class="toolbar">
+                    <strong id="itemCount">0 items</strong>
+                    <input type="search" id="searchItems" placeholder="Search name, color, fabric…"
+                        style="flex:1;min-width:140px;margin:0;" />
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label for="filterCategory">Category</label>
+                        <select id="filterCategory">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filterColor">Color</label>
+                        <select id="filterColor">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filterFormality">Formality</label>
+                        <select id="filterFormality">
+                            <option value="">All</option>
+                            <option value="casual">Casual</option>
+                            <option value="smart casual">Smart casual</option>
+                            <option value="formal">Formal</option>
+                            <option value="traditional">Traditional</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filterOccasion">Suited event</label>
+                        <select id="filterOccasion">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button type="button" class="btn" id="btnAddItem">+ Add item</button>
+                    <button type="button" class="btn secondary" id="btnExport">Export backup</button>
+                    <button type="button" class="btn secondary" id="btnImport">Import backup</button>
+                    <input type="file" id="importFile" accept="application/json,.json" class="hidden" />
+                    <button type="button" class="btn secondary" id="btnClearSample">Clear sample data</button>
+                </div>
+            </div>
+            <div id="itemGrid" class="item-grid"></div>
+            <div id="wardrobeEmpty" class="empty hidden">No items match. Add clothes or clear filters.</div>
+        </section>
+
+        <section id="panel-outfits" class="panel">
+            <div class="card">
+                <h2>Get outfit ideas</h2>
+                <label for="eventSelect">Event</label>
+                <select id="eventSelect"></select>
+                <label for="customEventInput">Add custom event</label>
+                <div class="toolbar">
+                    <input type="text" id="customEventInput" placeholder="e.g. engagement dinner"
+                        style="flex:1;margin:0;" />
+                    <button type="button" class="btn secondary" id="btnAddCustomEvent">Add</button>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label for="weatherOverride">Weather / season</label>
+                        <select id="weatherOverride">
+                            <option value="auto">Auto (location + date)</option>
+                            <option value="summer">Summer / hot</option>
+                            <option value="monsoon">Monsoon / humid</option>
+                            <option value="winter">Winter / cold</option>
+                            <option value="spring">Spring / mild</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" id="casualLookMode" /> Casual look mode (relaxed tips)
+                        </label>
+                    </div>
+                </div>
+                <button type="button" class="btn" id="btnSuggest">Suggest 3 outfits</button>
+            </div>
+            <div id="outfitResults"></div>
+            <div class="card">
+                <h3>Saved favorites</h3>
+                <div id="favoritesList"></div>
+            </div>
+        </section>
+
+        <section id="panel-tryon" class="panel">
+            <div class="card">
+                <h2>Try-on preview <span class="badge">Preview (approximate fit)</span></h2>
+                <div id="noPhoto" class="empty hidden">Add your photo to see clothes on yourself.<br /><br />
+                    <button type="button" class="btn" id="btnAddPhoto">Add my photo</button></div>
+                <div class="tryon-wrap" id="tryWrap">
+                    <div>
+                        <div class="stage"><canvas id="tryCanvas" width="720" height="960"></canvas></div>
+                        <p class="privacy">Drag an item to move it. Mouse wheel resizes (Shift + wheel rotates). Positions are remembered per item. 🔒 Your photo stays on this device.</p>
+                        <div id="itemCtl" class="hidden">
+                            <strong id="ctlName"></strong>
+                            <label>Size</label><input type="range" id="ctlSize" min="5" max="120" />
+                            <label>Rotate</label><input type="range" id="ctlRot" min="-180" max="180" />
+                            <div class="toolbar">
+                                <button type="button" class="btn sm secondary" id="ctlReset">Reset position</button>
+                                <button type="button" class="btn sm secondary" id="ctlBg">Remove background</button>
+                            </div>
+                            <div id="ctlMsg" class="privacy"></div>
+                        </div>
+                        <div class="toolbar">
+                            <button type="button" class="btn sm secondary" id="btnChangePhoto">Change my photo</button>
+                            <button type="button" class="btn sm secondary" id="btnClearTry">Clear</button>
+                            <button type="button" class="btn sm" id="btnSaveTry">Save outfit</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="tryEvent">Event</label>
+                        <select id="tryEvent"></select>
+                        <div id="picker"></div>
+                        <div class="outfit-card" id="suggestBox"></div>
+                        <div class="privacy" id="aiBox" style="margin-top:12px">
+                            <strong>Optional AI try-on (realistic):</strong> <span id="aiState"></span><br />
+                            <button type="button" class="btn sm secondary" id="btnAI">Make realistic preview</button>
+                            <img id="aiResult" alt="" style="max-width:100%;margin-top:8px;border-radius:8px;display:none" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="panel-history" class="panel">
+            <div class="card">
+                <h2>Wear history</h2>
+                <p class="meta" style="color:var(--muted);font-size:0.9rem;">Log what you wore to avoid repeating
+                    outfits too soon.</p>
+                <div id="historyList"></div>
+            </div>
+        </section>
+
+        <section id="panel-gaps" class="panel">
+            <div class="card">
+                <h2>Wardrobe gaps</h2>
+                <p style="color:var(--muted);font-size:0.9rem;">What to buy for more combinations and key events.</p>
+                <div id="gapsReport"></div>
+                <button type="button" class="btn secondary" id="btnRefreshGaps">Refresh report</button>
+            </div>
+        </section>
+
+        <section id="panel-settings" class="panel">
+            <div class="card">
+                <h2>My photo &amp; privacy</h2>
+                <div class="toolbar">
+                    <img id="photoThumb" alt="My photo" style="height:96px;border-radius:8px;display:none" />
+                    <button type="button" class="btn secondary" id="btnChangePhoto2">Change my photo</button>
+                </div>
+                <label for="skinTone">Skin tone (used only for colour advice)</label>
+                <select id="skinTone"><option value="">Not set</option><option value="fair">Fair</option><option value="wheatish">Wheatish</option><option value="medium">Medium / olive</option><option value="brown">Brown</option><option value="deep">Deep</option></select>
+                <p class="privacy">🔒 Your photo is stored only in this browser (IndexedDB). It never leaves your device unless you turn on the optional AI try-on in the code.</p>
+                <p class="privacy" id="storageInfo"></p>
+            </div>
+            <div class="card">
+                <h2>Color preferences</h2>
+                <p style="font-size:0.9rem;color:var(--muted);">Tap to toggle loved (✓) or avoid (✗). Neutral palette is
+                    default.</p>
+                <div id="colorPrefChips" class="color-chips"></div>
+                <input type="hidden" id="lovedColors" />
+                <input type="hidden" id="avoidColors" />
+            </div>
+            <div class="card">
+                <h2>Data</h2>
+                <button type="button" class="btn secondary" id="btnExport2">Export backup (JSON)</button>
+                <button type="button" class="btn secondary" id="btnImport2">Import backup</button>
+                <button type="button" class="btn danger" id="btnWipeAll">Delete all local data</button>
+            </div>
+        </section>
+    </main>
+
+    <div id="modalRoot" class="hidden"></div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const DB_NAME = 'MySmartWardrobeDB';
+            const DB_VERSION = 2;
+            const STORE_ITEMS = 'items';
+            const LS_KEY = 'msw_meta_v1';
+
+            const CATEGORIES = [
+                'shirt', 't-shirt', 'pant', 'jeans', 'shalwar kameez', 'kurta', 'waistcoat',
+                'blazer/suit', 'sherwani', 'shoes', 'hat/cap', 'accessories'
+            ];
+
+            const TOP_CATS = ['shirt', 't-shirt', 'kurta', 'shalwar kameez', 'sherwani', 'blazer/suit', 'waistcoat'];
+            const BOTTOM_CATS = ['pant', 'jeans'];
+            const FOOTWEAR = ['shoes'];
+            const HEADWEAR = ['hat/cap'];
+            const ACCESSORY = ['accessories'];
+
+            const BASE_COLORS = ['navy', 'black', 'white', 'grey', 'beige', 'olive', 'brown', 'maroon', 'cream', 'blue', 'green', 'red', 'yellow', 'orange', 'pink', 'purple'];
+
+            const DEFAULT_EVENTS = [
+                'office', 'casual day', 'Friday prayer', 'Eid', 'wedding (mehndi)', 'wedding (baraat)', 'wedding (walima)',
+                'party', 'interview', 'travel', 'family dinner', 'university day', 'funeral', 'date', 'gym'
+            ];
+
+            const EVENT_RULES = {
+                'office': { formality: ['smart casual', 'formal'], western: true, loudColors: false },
+                'casual day': { formality: ['casual', 'smart casual'], western: true, loudColors: true },
+                'Friday prayer': { formality: ['traditional', 'smart casual'], traditional: true, loudColors: false },
+                'Eid': { formality: ['traditional', 'formal'], traditional: true, loudColors: false },
+                'wedding (mehndi)': { formality: ['traditional', 'formal', 'smart casual'], traditional: true, loudColors: true },
+                'wedding (baraat)': { formality: ['formal', 'traditional'], traditional: true, sherwaniPreferred: true },
+                'wedding (walima)': { formality: ['formal', 'traditional'], traditional: true },
+                'party': { formality: ['smart casual', 'formal', 'casual'], loudColors: true },
+                'interview': { formality: ['formal', 'smart casual'], western: true, loudColors: false },
+                'travel': { formality: ['casual', 'smart casual'], western: true },
+                'family dinner': { formality: ['traditional', 'smart casual', 'casual'], traditional: true },
+                'university day': { formality: ['casual', 'smart casual'], western: true },
+                'funeral': { formality: ['formal', 'traditional'], colors: ['white', 'black', 'grey', 'navy'], loudColors: false, noBright: true },
+                'date': { formality: ['smart casual', 'formal'], western: true },
+                'gym': { formality: ['casual'], western: true }
+            };
+
+            const TRADITIONAL_CATS = new Set(['shalwar kameez', 'kurta', 'sherwani', 'waistcoat']);
+
+            let db = null;
+            let itemsCache = [];
+            let meta = loadMeta();
+
+            function loadMeta() {
+                try {
+                    return JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+                } catch {
+                    return {};
+                }
+            }
+
+            function saveMeta() {
+                try { localStorage.setItem(LS_KEY, JSON.stringify(meta)); } catch { }
+                if (db) trackWrite(kvPut('meta', JSON.parse(JSON.stringify(meta)))).catch(() => { });
+            }
+
+            function uid() {
+                return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
+            }
+
+            function openDB() {
+                return new Promise((resolve, reject) => {
+                    const req = indexedDB.open(DB_NAME, DB_VERSION);
+                    req.onerror = () => reject(req.error);
+                    req.onsuccess = () => { db = req.result; resolve(db); };
+                    req.onupgradeneeded = (e) => {
+                        const d = e.target.result;
+                        if (!d.objectStoreNames.contains(STORE_ITEMS)) {
+                            d.createObjectStore(STORE_ITEMS, { keyPath: 'id' });
+                        }
+                        if (!d.objectStoreNames.contains('kv')) {
+                            d.createObjectStore('kv', { keyPath: 'key' });
+                        }
+                    };
+                });
+            }
+
+            function dbGetAll() {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_ITEMS, 'readonly');
+                    const req = tx.objectStore(STORE_ITEMS).getAll();
+                    req.onsuccess = () => resolve(req.result || []);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            function dbPut(item) { return trackWrite(rawPut(item)); }
+            function rawPut(item) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_ITEMS, 'readwrite');
+                    tx.objectStore(STORE_ITEMS).put(item);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            function dbDelete(id) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_ITEMS, 'readwrite');
+                    tx.objectStore(STORE_ITEMS).delete(id);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            function dbClear() {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_ITEMS, 'readwrite');
+                    tx.objectStore(STORE_ITEMS).clear();
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async function compressImage(file, maxW = 800, quality = 0.72) {
+                const bitmap = await createImageBitmap(file);
+                const scale = Math.min(1, maxW / bitmap.width);
+                const w = Math.round(bitmap.width * scale);
+                const h = Math.round(bitmap.height * scale);
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0, w, h);
+                bitmap.close();
+                return canvas.toDataURL('image/jpeg', quality);
+            }
+
+            function inferSeasonFromDate() {
+                const m = new Date().getMonth();
+                if (m >= 3 && m <= 8) return 'summer';
+                if (m >= 9 && m <= 10) return 'monsoon';
+                if (m >= 11 || m <= 1) return 'winter';
+                return 'spring';
+            }
+
+            let climateState = { season: inferSeasonFromDate(), tempC: null, label: 'Local season estimate' };
+
+            async function fetchClimate() {
+                if (!navigator.geolocation) {
+                    climateState.season = inferSeasonFromDate();
+                    climateState.label = 'Season from date (no GPS)';
+                    updateClimateUI();
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    try {
+                        const { latitude, longitude } = pos.coords;
+                        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`;
+                        const res = await fetch(url);
+                        const data = await res.json();
+                        const t = data.current?.temperature_2m;
+                        climateState.tempC = t;
+                        if (t >= 28) climateState.season = 'summer';
+                        else if (t >= 20) climateState.season = 'spring';
+                        else if (t >= 12) climateState.season = 'monsoon';
+                        else climateState.season = 'winter';
+                        climateState.label = `${Math.round(t)}°C · ${climateState.season}`;
+                    } catch {
+                        climateState.season = inferSeasonFromDate();
+                        climateState.label = 'Season from date (weather unavailable)';
+                    }
+                    updateClimateUI();
+                }, () => {
+                    climateState.season = inferSeasonFromDate();
+                    climateState.label = 'Season from date (location denied)';
+                    updateClimateUI();
+                }, { timeout: 8000, maximumAge: 600000 });
+            }
+
+            function updateClimateUI() {
+                const el = document.getElementById('climateDisplay');
+                if (el) el.textContent = `Climate: ${climateState.label}`;
+            }
+
+            function getEffectiveSeason() {
+                const ov = document.getElementById('weatherOverride')?.value || 'auto';
+                if (ov === 'auto') return climateState.season;
+                return ov;
+            }
+
+            function normalizeColor(c) {
+                return (c || '').toLowerCase().trim();
+            }
+
+            const NEUTRALS = new Set(['black', 'white', 'grey', 'beige', 'navy', 'cream', 'brown']);
+            const LOUD = new Set(['yellow', 'orange', 'red', 'pink', 'purple', 'bright green']);
+
+            function colorHue(name) {
+                const map = { red: 0, maroon: 350, orange: 30, yellow: 50, olive: 80, green: 120, blue: 210, navy: 220, purple: 270, pink: 330, brown: 25, beige: 40, cream: 45, white: 0, grey: 0, black: 0 };
+                return map[normalizeColor(name)] ?? 200;
+            }
+
+            function harmonyNotes(colors) {
+                const uniq = [...new Set(colors.map(normalizeColor).filter(Boolean))];
+                const notes = [];
+                const warnings = [];
+                if (uniq.every(c => NEUTRALS.has(c))) notes.push('All neutrals — safe, polished combination.');
+                if (uniq.length >= 2) {
+                    const hues = uniq.filter(c => !NEUTRALS.has(c)).map(colorHue);
+                    if (hues.length >= 2) {
+                        const diff = Math.abs(hues[0] - hues[1]) % 360;
+                        const d = diff > 180 ? 360 - diff : diff;
+                        if (d >= 150 && d <= 210) notes.push('Complementary contrast — use one color as accent.');
+                        else if (d <= 40) notes.push('Analogous harmony — cohesive and calm.');
+                        else if (d >= 60 && d <= 120) notes.push('Balanced contrast — works for smart casual.');
+                    }
+                }
+                if (uniq.includes('red') && uniq.includes('green')) warnings.push('Red + green can clash unless one is very muted (e.g. olive + maroon).');
+                if (uniq.includes('orange') && uniq.includes('red')) warnings.push('Orange + red is very loud for formal or religious events.');
+                if (uniq.filter(c => !NEUTRALS.has(c)).length > 2) warnings.push('More than two strong colors — simplify for formal events.');
+                const loved = new Set(meta.lovedColors || []);
+                const avoid = new Set(meta.avoidColors || []);
+                uniq.forEach(c => {
+                    if (loved.has(c)) notes.push(`Includes a color you love (${c}).`);
+                    if (avoid.has(c)) warnings.push(`Includes ${c}, which you marked to avoid.`);
+                });
+                return { notes, warnings };
+            }
+
+            function seasonMatch(itemSeason, effective) {
+                const s = (itemSeason || 'all').toLowerCase();
+                if (s === 'all' || s === 'year-round') return 1;
+                if (s === effective) return 1;
+                if (effective === 'spring' && (s === 'summer' || s === 'monsoon')) return 0.6;
+                if (effective === 'monsoon' && s === 'summer') return 0.7;
+                if (effective === 'winter' && s === 'summer') return 0.2;
+                if (effective === 'summer' && s === 'winter') return 0.2;
+                return 0.5;
+            }
+
+            function formalityScore(itemFormality, allowed) {
+                const f = (itemFormality || 'casual').toLowerCase();
+                if (allowed.includes(f)) return 1;
+                const order = ['casual', 'smart casual', 'formal', 'traditional'];
+                const ai = order.indexOf(f);
+                const minDist = Math.min(...allowed.map(a => Math.abs(order.indexOf(a) - ai)));
+                return Math.max(0, 1 - minDist * 0.35);
+            }
+
+            function isTraditionalItem(item) {
+                if (item.traditional) return true;
+                return TRADITIONAL_CATS.has(item.category);
+            }
+
+            function culturalWarnings(event, top, bottom, shoes) {
+                const rule = EVENT_RULES[event] || {};
+                const w = [];
+                const pieces = [top, bottom, shoes].filter(Boolean);
+                const cats = pieces.map(p => p.category);
+                const colors = pieces.map(p => normalizeColor(p.color));
+
+                if (rule.traditional) {
+                    const hasTrad = pieces.some(isTraditionalItem);
+                    if (!hasTrad && (event === 'Friday prayer' || event === 'Eid' || event === 'family dinner')) {
+                        w.push('Cultural note: shalwar kameez or kurta is expected for this event in Pakistani settings.');
+                    }
+                }
+                if (rule.western && (event === 'office' || event === 'interview')) {
+                    if (cats.includes('shalwar kameez') || cats.includes('sherwani')) {
+                        w.push('Western business dress is usual for office/interview unless your workplace is traditional.');
+                    }
+                }
+                if (rule.sherwaniPreferred && !cats.includes('sherwani') && !cats.includes('waistcoat')) {
+                    w.push('Baraat often calls for sherwani or formal waistcoat — consider adding one.');
+                }
+                if (rule.noBright || rule.loudColors === false) {
+                    if (colors.some(c => LOUD.has(c))) w.push('Avoid very loud colors at this event.');
+                }
+                if (event === 'funeral') {
+                    if (colors.some(c => ['yellow', 'orange', 'red', 'pink'].includes(c))) {
+                        w.push('Funerals: prefer white, black, grey, or navy — keep patterns minimal.');
+                    }
+                }
+                if (event === 'Friday prayer' || event === 'Eid') {
+                    if (cats.includes('jeans') && !cats.includes('kurta')) {
+                        w.push('Jeans alone are not ideal for mosque; pair with kurta or wear shalwar kameez.');
+                    }
+                }
+                return w;
+            }
+
+            function tuckRecommendation(event, top, bottom, casualMode) {
+                if (!top) return '—';
+                const cat = top.category;
+                if (cat === 'kurta' || cat === 'shalwar kameez' || cat === 'sherwani') return 'Untucked (traditional length).';
+                if (cat === 't-shirt') return casualMode ? 'Untucked or relaxed half-tuck.' : 'Untucked for casual day; half-tuck optional.';
+                const rule = EVENT_RULES[event] || {};
+                if (rule.formality?.includes('formal') || event === 'interview' || event === 'office') {
+                    if (bottom?.category === 'jeans') return 'Half-tuck or full tuck with belt for smart office look.';
+                    return 'Tucked in with belt for formal / smart casual.';
+                }
+                if (event === 'casual day' || casualMode) return 'Half-tucked or untucked for relaxed fit.';
+                return 'Tucked for smart events; half-tuck for casual.';
+            }
+
+            function howToWearNote(event, top, bottom, casualMode) {
+                const lines = [];
+                lines.push(tuckRecommendation(event, top, bottom, casualMode));
+                if (bottom?.category === 'jeans') lines.push('Dark wash jeans dress up easily with a blazer or crisp shirt.');
+                if (top?.category === 'kurta' && bottom?.category === 'jeans') lines.push('Kurta over jeans: keep kurta mid-thigh; avoid skinny jeans if you want a classic look.');
+                if (event === 'wedding (baraat)' || event === 'wedding (walima)') lines.push('Match metals (watch, cufflinks) and keep shoes polished.');
+                if (casualMode) lines.push('Casual mode: roll sleeves, skip tie, lighter footwear OK if event allows.');
+                return lines.join(' ');
+            }
+
+            function hatSuggestion(event, hatItems, outfitColors) {
+                const casualEvents = new Set(['casual day', 'travel', 'university day', 'gym']);
+                const tradEvents = new Set(['Eid', 'Friday prayer', 'family dinner', 'wedding (mehndi)', 'wedding (baraat)']);
+                if (event === 'office' || event === 'interview' || event === 'funeral' || event === 'party') {
+                    return { text: 'No hat recommended.', hat: null };
+                }
+                if (tradEvents.has(event)) {
+                    const tradHat = hatItems.find(h => /peshawari|pagri|cap/i.test(h.name) || h.traditional);
+                    if (tradHat) return { text: `Traditional headwear: ${tradHat.name}.`, hat: tradHat };
+                    return { text: 'No hat required; optional Peshawari cap for traditional flair.', hat: null };
+                }
+                if (casualEvents.has(event)) {
+                    const cap = hatItems.find(h => /cap|hat/i.test(h.name));
+                    if (cap) return { text: `Casual cap: ${cap.name}.`, hat: cap };
+                }
+                return { text: 'No hat recommended.', hat: null };
+            }
+
+            function missingForEvent(event, tops, bottoms, shoes, formals) {
+                const need = [];
+                const rule = EVENT_RULES[event] || {};
+                if (!tops.length) need.push('at least one top (shirt, kurta, or shalwar kameez)');
+                if (!bottoms.length && !tops.some(t => t.category === 'shalwar kameez' || t.category === 'sherwani')) {
+                    need.push('trousers or jeans (or a full shalwar kameez / sherwani)');
+                }
+                if (!shoes.length) need.push('formal or casual shoes');
+                if (rule.sherwaniPreferred && !itemsCache.some(i => i.category === 'sherwani')) {
+                    need.push('sherwani or formal waistcoat for baraat');
+                }
+                if (event === 'funeral' && !itemsCache.some(i => ['white', 'black', 'grey', 'navy'].includes(normalizeColor(i.color)))) {
+                    need.push('simple shirt or shalwar kameez in white, black, grey, or navy');
+                }
+                return need;
+            }
+
+            function recentWearPenalty(itemIds) {
+                const hist = meta.wearHistory || [];
+                const now = Date.now();
+                const fourteen = 14 * 86400000;
+                let pen = 0;
+                hist.forEach(h => {
+                    if (now - h.at < fourteen) {
+                        const overlap = h.itemIds.filter(id => itemIds.includes(id)).length;
+                        pen += overlap * 0.15;
+                    }
+                });
+                return pen;
+            }
+
+            function buildOutfits(event) {
+                const effectiveSeason = getEffectiveSeason();
+                const rule = EVENT_RULES[event] || { formality: ['casual', 'smart casual', 'formal', 'traditional'] };
+                const allowedForm = rule.formality || ['casual', 'smart casual', 'formal', 'traditional'];
+                const casualMode = document.getElementById('casualLookMode')?.checked;
+
+                const tops = itemsCache.filter(i => TOP_CATS.includes(i.category));
+                const bottoms = itemsCache.filter(i => BOTTOM_CATS.includes(i.category));
+                const shoes = itemsCache.filter(i => FOOTWEAR.includes(i.category));
+                const hats = itemsCache.filter(i => HEADWEAR.includes(i.category));
+                const acc = itemsCache.filter(i => ACCESSORY.includes(i.category));
+
+                const missing = missingForEvent(event, tops, bottoms, shoes, allowedForm);
+                if (missing.length && (tops.length === 0 || shoes.length === 0)) {
+                    return { error: `Add to your wardrobe: ${missing.join('; ')}.`, outfits: [] };
+                }
+
+                const combos = [];
+
+                function consider(top, bottom, shoe, layer) {
+                    if (top.category === 'shalwar kameez' || top.category === 'sherwani') bottom = null;
+                    if (bottom && top.category === 'shalwar kameez') return;
+
+                    let score = 0;
+                    score += formalityScore(top.formality, allowedForm) * 30;
+                    if (bottom) score += formalityScore(bottom.formality, allowedForm) * 25;
+                    else if (TRADITIONAL_CATS.has(top.category)) score += 22;
+                    score += formalityScore(shoe.formality, allowedForm) * 20;
+                    if (layer) score += formalityScore(layer.formality, allowedForm) * 10;
+
+                    score += seasonMatch(top.season, effectiveSeason) * 8;
+                    if (bottom) score += seasonMatch(bottom.season, effectiveSeason) * 6;
+                    score += seasonMatch(shoe.season, effectiveSeason) * 5;
+
+                    if (top.suitedEvents?.length && top.suitedEvents.includes(event)) score += 12;
+                    if (bottom?.suitedEvents?.includes(event)) score += 8;
+
+                    if (rule.traditional && isTraditionalItem(top)) score += 15;
+                    if (rule.western && ['shirt', 'blazer/suit', 'pant'].includes(top.category)) score += 10;
+
+                    const colors = [top.color, bottom?.color, shoe.color].filter(Boolean);
+                    const harm = harmonyNotes(colors);
+                    score += harm.notes.length * 2;
+                    score -= harm.warnings.length * 4;
+
+                    const ids = [top.id, bottom?.id, shoe.id, layer?.id].filter(Boolean);
+                    score -= recentWearPenalty(ids) * 10;
+
+                    const cult = culturalWarnings(event, top, bottom, shoe);
+                    score -= cult.length * 5;
+
+                    combos.push({ top, bottom, shoe, layer, score, harm, cult, colors });
+                }
+
+                const shoeList = shoes.length ? shoes : [{ id: 'ghost', name: '(add shoes)', category: 'shoes', formality: 'casual', color: 'black' }];
+
+                for (const top of tops) {
+                    if (top.category === 'waistcoat') continue;
+                    const layers = itemsCache.filter(i => i.category === 'waistcoat' || i.category === 'blazer/suit');
+                    if (top.category === 'shalwar kameez' || top.category === 'sherwani' || top.category === 'kurta') {
+                        for (const shoe of shoeList) consider(top, null, shoe, null);
+                        for (const layer of layers) for (const shoe of shoeList) consider(top, null, shoe, layer);
+                    } else {
+                        for (const bottom of bottoms.length ? bottoms : [null]) {
+                            if (!bottom) continue;
+                            for (const shoe of shoeList) consider(top, bottom, shoe, null);
+                            for (const layer of layers) for (const shoe of shoeList) consider(top, bottom, shoe, layer);
+                        }
+                    }
+                }
+
+                combos.sort((a, b) => b.score - a.score);
+                const top3 = combos.slice(0, 3);
+
+                return { missing, outfits: top3, hats, acc, event, effectiveSeason, casualMode };
+            }
+
+            function explainOutfit(o, event, effectiveSeason) {
+                const parts = [];
+                parts.push(`Formality fit for ${event}.`);
+                parts.push(`Season (${effectiveSeason}): fabrics aligned where possible.`);
+                o.harm.notes.forEach(n => parts.push(n));
+                return parts.join(' ');
+            }
+
+            // ——— Sample data ———
+            const SAMPLE_FLAG = 'sampleLoaded_v1';
+
+            function sampleItems() {
+                const ev = ['office', 'casual day', 'Friday prayer', 'Eid', 'family dinner'];
+                return [
+                    { name: 'White cotton kurta', category: 'kurta', color: 'white', pattern: 'solid', fabric: 'cotton', season: 'summer', formality: 'traditional', traditional: true, suitedEvents: ['Eid', 'Friday prayer', 'family dinner'] },
+                    { name: 'Navy shalwar kameez', category: 'shalwar kameez', color: 'navy', pattern: 'solid', fabric: 'cotton', season: 'year-round', formality: 'traditional', traditional: true, suitedEvents: ['Eid', 'Friday prayer', 'wedding (walima)'] },
+                    { name: 'Maroon waistcoat', category: 'waistcoat', color: 'maroon', pattern: 'solid', fabric: 'poly-viscose', season: 'winter', formality: 'formal', traditional: true, suitedEvents: ['wedding (baraat)', 'wedding (walima)'] },
+                    { name: 'Light blue Oxford shirt', category: 'shirt', color: 'blue', pattern: 'solid', fabric: 'cotton', season: 'year-round', formality: 'smart casual', suitedEvents: ['office', 'interview', 'university day'] },
+                    { name: 'Grey chinos', category: 'pant', color: 'grey', pattern: 'solid', fabric: 'cotton twill', season: 'year-round', formality: 'smart casual', suitedEvents: ['office', 'casual day', 'travel'] },
+                    { name: 'Dark indigo jeans', category: 'jeans', color: 'navy', pattern: 'solid', fabric: 'denim', season: 'year-round', formality: 'casual', suitedEvents: ['casual day', 'university day', 'travel'] },
+                    { name: 'Charcoal blazer', category: 'blazer/suit', color: 'grey', pattern: 'solid', fabric: 'wool blend', season: 'winter', formality: 'formal', suitedEvents: ['office', 'interview', 'party'] },
+                    { name: 'Black formal trousers', category: 'pant', color: 'black', pattern: 'solid', fabric: 'poly-wool', season: 'year-round', formality: 'formal', suitedEvents: ['office', 'interview', 'funeral'] },
+                    { name: 'Olive polo tee', category: 't-shirt', color: 'olive', pattern: 'solid', fabric: 'cotton pique', season: 'summer', formality: 'casual', suitedEvents: ['casual day', 'travel', 'gym'] },
+                    { name: 'Brown leather loafers', category: 'shoes', color: 'brown', pattern: 'solid', fabric: 'leather', season: 'year-round', formality: 'smart casual', suitedEvents: ['office', 'casual day', 'family dinner'] },
+                    { name: 'Black Oxford shoes', category: 'shoes', color: 'black', pattern: 'solid', fabric: 'leather', season: 'year-round', formality: 'formal', suitedEvents: ['interview', 'office', 'funeral', 'wedding (walima)'] },
+                    { name: 'Beige Peshawari sandals', category: 'shoes', color: 'beige', pattern: 'solid', fabric: 'leather', season: 'summer', formality: 'traditional', traditional: true, suitedEvents: ['Eid', 'casual day'] },
+                    { name: 'Navy baseball cap', category: 'hat/cap', color: 'navy', pattern: 'solid', fabric: 'cotton', season: 'summer', formality: 'casual', suitedEvents: ['travel', 'casual day'] },
+                    { name: 'Brown leather belt', category: 'accessories', color: 'brown', pattern: 'solid', fabric: 'leather', season: 'year-round', formality: 'smart casual', suitedEvents: ['office', 'casual day'] },
+                    { name: 'Silver watch', category: 'accessories', color: 'grey', pattern: 'solid', fabric: 'metal', season: 'year-round', formality: 'smart casual', suitedEvents: ['office', 'party'] }
+                ].map(x => ({ ...x, id: uid(), photo: null, createdAt: Date.now() }));
+            }
+
+            async function loadSamplesIfNeeded() {
+                if (meta[SAMPLE_FLAG]) return;
+                const all = await dbGetAll();
+                if (all.length > 0) return;
+                for (const it of sampleItems()) await dbPut(it);
+                meta[SAMPLE_FLAG] = true;
+                saveMeta();
+            }
+
+            async function clearSampleDataOnly() {
+                const all = await dbGetAll();
+                const samples = sampleItems().map(s => s.name);
+                for (const it of all) {
+                    if (samples.includes(it.name)) await dbDelete(it.id);
+                }
+                meta[SAMPLE_FLAG] = false;
+                saveMeta();
+                await refreshItems();
+            }
+
+            // ——— UI ———
+            function setTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                meta.theme = t;
+                saveMeta();
+            }
+
+            function getEventsList() {
+                const custom = meta.customEvents || [];
+                return [...new Set([...DEFAULT_EVENTS, ...custom])].sort();
+            }
+
+            function populateSelects() {
+                const fc = document.getElementById('filterCategory');
+                fc.innerHTML = '<option value="">All</option>' + CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+                const fo = document.getElementById('filterOccasion');
+                fo.innerHTML = '<option value="">All</option>' + getEventsList().map(e => `<option value="${e}">${e}</option>`).join('');
+
+                const es = document.getElementById('eventSelect');
+                es.innerHTML = getEventsList().map(e => `<option value="${e}">${e}</option>`).join('');
+
+                const colors = [...new Set(itemsCache.map(i => i.color).filter(Boolean))].sort();
+                document.getElementById('filterColor').innerHTML = '<option value="">All</option>' + colors.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+
+            function filteredItems() {
+                const q = (document.getElementById('searchItems').value || '').toLowerCase();
+                const cat = document.getElementById('filterCategory').value;
+                const col = document.getElementById('filterColor').value;
+                const form = document.getElementById('filterFormality').value;
+                const occ = document.getElementById('filterOccasion').value;
+
+                return itemsCache.filter(it => {
+                    if (cat && it.category !== cat) return false;
+                    if (col && normalizeColor(it.color) !== normalizeColor(col)) return false;
+                    if (form && (it.formality || '').toLowerCase() !== form) return false;
+                    if (occ && !(it.suitedEvents || []).includes(occ)) return false;
+                    if (q) {
+                        const blob = [it.name, it.category, it.color, it.fabric, it.pattern].join(' ').toLowerCase();
+                        if (!blob.includes(q)) return false;
+                    }
+                    return true;
+                });
+            }
+
+            function renderWardrobe() {
+                const list = filteredItems();
+                document.getElementById('itemCount').textContent = `${itemsCache.length} items (${list.length} shown)`;
+                const grid = document.getElementById('itemGrid');
+                const empty = document.getElementById('wardrobeEmpty');
+                grid.innerHTML = '';
+                if (!list.length) { empty.classList.remove('hidden'); return; }
+                empty.classList.add('hidden');
+
+                list.forEach(it => {
+                    const el = document.createElement('article');
+                    el.className = 'item-card';
+                    const img = it.photo ? `<img src="${it.photo}" alt="" loading="lazy" />` : `<div style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--border);color:var(--muted);font-size:2rem;">👔</div>`;
+                    el.innerHTML = `
+        ${img}
+        <div class="body">
+          <div class="title">${escapeHtml(it.name)}</div>
+          <div class="meta">${escapeHtml(it.category)} · ${escapeHtml(it.color)} · ${escapeHtml(it.formality || '')}</div>
+          <div class="actions">
+            <button type="button" class="btn sm" data-try="${it.id}">Try on</button>
+            <button type="button" class="btn sm secondary" data-edit="${it.id}">Edit</button>
+            <button type="button" class="btn sm danger" data-del="${it.id}">Delete</button>
+          </div>
+        </div>`;
+                    grid.appendChild(el);
+                });
+
+                grid.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => openItemModal(btn.dataset.edit)));
+                grid.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => confirmDelete(btn.dataset.del)));
+            }
+
+            function escapeHtml(s) {
+                return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function openItemModal(id) {
+                const existing = id ? itemsCache.find(i => i.id === id) : null;
+                const events = getEventsList();
+                const suited = new Set(existing?.suitedEvents || []);
+
+                const root = document.getElementById('modalRoot');
+                root.className = 'modal-backdrop';
+                root.innerHTML = `
+      <div class="modal" role="dialog" aria-labelledby="modalTitle">
+        <h2 id="modalTitle">${existing ? 'Edit item' : 'Add item'}</h2>
+        <form id="itemForm">
+          <label>Name</label>
+          <input name="name" required value="${escapeHtml(existing?.name || '')}" />
+          <label>Category</label>
+          <select name="category" required>${CATEGORIES.map(c => `<option ${existing?.category === c ? 'selected' : ''}>${c}</option>`).join('')}</select>
+          <div class="grid-2">
+            <div><label>Color</label><input name="color" list="colorList" value="${escapeHtml(existing?.color || '')}" /></div>
+            <div><label>Pattern</label><input name="pattern" value="${escapeHtml(existing?.pattern || 'solid')}" /></div>
+          </div>
+          <datalist id="colorList">${BASE_COLORS.map(c => `<option value="${c}">`).join('')}</datalist>
+          <div class="grid-2">
+            <div><label>Fabric</label><input name="fabric" value="${escapeHtml(existing?.fabric || '')}" /></div>
+            <div><label>Season</label>
+              <select name="season">
+                ${['year-round', 'summer', 'monsoon', 'winter', 'spring'].map(s => `<option ${existing?.season === s ? 'selected' : ''}>${s}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <label>Formality</label>
+          <select name="formality">
+            ${['casual', 'smart casual', 'formal', 'traditional'].map(f => `<option ${existing?.formality === f ? 'selected' : ''}>${f}</option>`).join('')}
+          </select>
+          <label>Fit</label><select name="fit">${[['', 'not set'], ['relaxed', 'relaxed'], ['regular', 'regular'], ['slim', 'slim']].map(f => `<option value="${f[0]}" ${(existing?.fit || '') === f[0] ? 'selected' : ''}>${f[1]}</option>`).join('')}</select>
+          <label><input type="checkbox" name="traditional" ${existing?.traditional ? 'checked' : ''} /> Mark as traditional</label>
+          <label>Suited events</label>
+          <div class="checkbox-row" id="suitedEventsBox">
+            ${events.map(e => `<label><input type="checkbox" name="suited" value="${escapeHtml(e)}" ${suited.has(e) ? 'checked' : ''} /> ${escapeHtml(e)}</label>`).join('')}
+          </div>
+          <label>Photo (optional; used for try-on, plain background works best)</label>
+          <input type="file" name="photo" accept="image/*" />
+          <label><input type="checkbox" name="rmbg" checked /> Remove background automatically</label><div id="bgStatus" class="privacy"></div>
+          ${existing?.photo ? '<p style="font-size:0.85rem;color:var(--muted);">Current photo kept unless you pick a new one.</p>' : ''}
+          <div class="modal-actions">
+            <button type="button" class="btn secondary" id="modalCancel">Cancel</button>
+            <button type="submit" class="btn">Save</button>
+          </div>
+        </form>
+      </div>`;
+
+                document.getElementById('modalCancel').onclick = closeModal;
+                root.onclick = (e) => { if (e.target === root) closeModal(); };
+
+                document.getElementById('itemForm').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const fd = new FormData(e.target);
+                    const item = {
+                        id: existing?.id || uid(),
+                        name: fd.get('name').trim(),
+                        category: fd.get('category'),
+                        color: fd.get('color').trim(),
+                        pattern: fd.get('pattern').trim(),
+                        fabric: fd.get('fabric').trim(),
+                        season: fd.get('season'),
+                        formality: fd.get('formality'),
+                        fit: fd.get('fit') || '',
+                        traditional: !!fd.get('traditional'),
+                        suitedEvents: [...e.target.querySelectorAll('input[name="suited"]:checked')].map(c => c.value),
+                        photo: existing?.photo || null,
+                        cutout: existing?.cutout || null,
+                        tryon: existing?.tryon || null,
+                        createdAt: existing?.createdAt || Date.now()
+                    };
+                    const file = fd.get('photo');
+                    const formEl = document.getElementById('itemForm');
+                    if (file && file.size) {
+                        formEl.querySelector('button[type=submit]').disabled = true;
+                        item.photo = await compressImage(file);
+                        item.cutout = null;
+                        if (fd.get('rmbg')) {
+                            try { item.cutout = await makeCutout(file, m => { const b = document.getElementById('bgStatus'); if (b) b.textContent = m; }); }
+                            catch (er) { toast('Background removal failed; the plain photo will be used.'); }
+                        }
+                    }
+                    try { await dbPut(item); } catch (er) { formEl.querySelector('button[type=submit]').disabled = false; return; }
+                    closeModal();
+                    await refreshItems();
+                };
+            }
+
+            function closeModal() {
+                const root = document.getElementById('modalRoot');
+                root.className = 'hidden';
+                root.innerHTML = '';
+            }
+
+            function confirmDelete(id) {
+                const it = itemsCache.find(i => i.id === id);
+                if (!confirm(`Delete "${it?.name}"? This cannot be undone.`)) return;
+                dbDelete(id).then(refreshItems);
+            }
+
+            async function refreshItems() {
+                itemsCache = await dbGetAll();
+                itemsCache.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                populateSelects();
+                renderWardrobe();
+                renderGaps();
+                if (typeof renderPicker === "function") renderPicker();
+            }
+
+            function renderOutfitResults(data) {
+                const box = document.getElementById('outfitResults');
+                if (data.error) {
+                    box.innerHTML = `<div class="card warn-box">${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+                if (!data.outfits.length) {
+                    box.innerHTML = `<div class="card empty">Not enough pieces to build outfits. Check gaps report.</div>`;
+                    return;
+                }
+
+                let html = '';
+                if (data.missing?.length) {
+                    html += `<div class="card warn-box"><strong>Consider buying:</strong> ${escapeHtml(data.missing.join('; '))}</div>`;
+                }
+
+                data.outfits.forEach((o, idx) => {
+                    const hat = hatSuggestion(data.event, data.hats, o.colors);
+                    const acc = data.acc.find(a => /belt|watch/i.test(a.name)) || data.acc[0];
+                    const why = explainOutfit(o, data.event, data.effectiveSeason);
+                    const tuck = tuckRecommendation(data.event, o.top, o.bottom, data.casualMode);
+                    const how = howToWearNote(data.event, o.top, o.bottom, data.casualMode);
+
+                    const parts = [
+                        `<strong>Top:</strong> ${escapeHtml(o.top.name)}`,
+                        o.bottom ? `<strong>Bottom:</strong> ${escapeHtml(o.bottom.name)}` : `<strong>Bottom:</strong> (integrated traditional piece)`,
+                        o.layer ? `<strong>Layer:</strong> ${escapeHtml(o.layer.name)}` : '',
+                        `<strong>Shoes:</strong> ${escapeHtml(o.shoe.name)}`,
+                        acc ? `<strong>Accessory:</strong> ${escapeHtml(acc.name)}` : '',
+                        `<strong>Headwear:</strong> ${escapeHtml(hat.text)}`
+                    ].filter(Boolean).join('<br/>');
+
+                    const warnHtml = [...o.harm.warnings, ...o.cult].map(w => `<li>${escapeHtml(w)}</li>`).join('');
+                    const favId = `outfit_${idx}_${o.top.id}_${o.bottom?.id || 'x'}_${o.shoe.id}`;
+
+                    html += `
+        <div class="card outfit-card">
+          <div class="toolbar"><span class="score">#${idx + 1} · Score ${Math.round(o.score)}</span>
+            <button type="button" class="btn sm secondary" data-fav='${JSON.stringify({ top: o.top.id, bottom: o.bottom?.id, shoe: o.shoe.id, layer: o.layer?.id, event: data.event, name: `Outfit for ${data.event}` }).replace(/'/g, '&#39;')}'>Save favorite</button>
+            <button type="button" class="btn sm" data-wear='${JSON.stringify([o.top.id, o.bottom?.id, o.shoe.id, o.layer?.id].filter(Boolean)).replace(/'/g, '&#39;')}'>Log worn today</button>
+            <button type="button" class="btn sm secondary" data-ev="${escapeHtml(data.event)}" data-tryon='${JSON.stringify([o.top.id, o.bottom?.id, o.shoe.id, o.layer?.id, hat.hat?.id].filter(Boolean)).replace(/'/g, '&#39;')}'>Preview on me</button>
+          </div>
+          <p>${parts}</p>
+          <div class="ok-box"><strong>Why this works:</strong> ${escapeHtml(why)}</div>
+          ${warnHtml ? `<div class="warn-box"><strong>Notes:</strong><ul class="compact">${warnHtml}</ul></div>` : ''}
+          <p><strong>Tuck:</strong> ${escapeHtml(tuck)}</p>
+          <p style="font-size:0.9rem;color:var(--muted);"><strong>How to wear:</strong> ${escapeHtml(how)}</p>
+        </div>`;
+                });
+
+                box.innerHTML = html;
+
+                box.querySelectorAll('[data-fav]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const payload = JSON.parse(btn.dataset.fav.replace(/&#39;/g, "'"));
+                        meta.favorites = meta.favorites || [];
+                        meta.favorites.push({ ...payload, id: uid(), savedAt: Date.now() });
+                        saveMeta();
+                        renderFavorites();
+                    });
+                });
+
+                box.querySelectorAll('[data-wear]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const ids = JSON.parse(btn.dataset.wear.replace(/&#39;/g, "'"));
+                        meta.wearHistory = meta.wearHistory || [];
+                        meta.wearHistory.unshift({ id: uid(), at: Date.now(), itemIds: ids, event: data.event });
+                        meta.wearHistory = meta.wearHistory.slice(0, 200);
+                        saveMeta();
+                        renderHistory();
+                        alert('Logged for today.');
+                    });
+                });
+            }
+
+            function renderFavorites() {
+                const list = document.getElementById('favoritesList');
+                const favs = meta.favorites || [];
+                if (!favs.length) { list.innerHTML = '<p class="empty">No saved outfits yet.</p>'; return; }
+                list.innerHTML = favs.map(f => {
+                    const names = [f.top, f.bottom, f.shoe, f.layer, f.head].filter(Boolean).map(id => itemsCache.find(i => i.id === id)?.name || id).join(' + ');
+                    return `<div class="outfit-card"><strong>${escapeHtml(f.event)}</strong><br/>${escapeHtml(names)}<br/>
+        <button type="button" class="btn sm danger" data-rmfav="${f.id}">Remove</button></div>`;
+                }).join('');
+                list.querySelectorAll('[data-rmfav]').forEach(btn => {
+                    btn.onclick = () => {
+                        meta.favorites = (meta.favorites || []).filter(x => x.id !== btn.dataset.rmfav);
+                        saveMeta();
+                        renderFavorites();
+                    };
+                });
+            }
+
+            function renderHistory() {
+                const list = document.getElementById('historyList');
+                const hist = meta.wearHistory || [];
+                if (!hist.length) { list.innerHTML = '<p class="empty">No wear history yet.</p>'; return; }
+                list.innerHTML = hist.slice(0, 50).map(h => {
+                    const names = h.itemIds.map(id => itemsCache.find(i => i.id === id)?.name || '?').join(', ');
+                    const d = new Date(h.at).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+                    return `<div class="outfit-card">${escapeHtml(d)} · ${escapeHtml(h.event || '')}<br/><span style="font-size:0.9rem;">${escapeHtml(names)}</span></div>`;
+                }).join('');
+            }
+
+            function renderGaps() {
+                const el = document.getElementById('gapsReport');
+                const tops = itemsCache.filter(i => TOP_CATS.includes(i.category));
+                const bottoms = itemsCache.filter(i => BOTTOM_CATS.includes(i.category));
+                const shoes = itemsCache.filter(i => FOOTWEAR.includes(i.category));
+                const suggestions = [];
+
+                if (!itemsCache.some(i => i.category === 'sherwani')) suggestions.push('Sherwani or formal waistcoat — unlocks baraat/walima formal looks.');
+                if (!itemsCache.some(i => i.category === 'shalwar kameez' || i.category === 'kurta')) suggestions.push('Shalwar kameez or kurta — essential for Eid, Friday prayer, family events.');
+                if (!bottoms.some(b => normalizeColor(b.color) === 'black')) suggestions.push('Black formal trousers — pairs with most shirts for office and funerals.');
+                if (!tops.some(t => t.category === 'shirt' && ['white', 'blue', 'light blue'].includes(normalizeColor(t.color)))) suggestions.push('White or light blue dress shirt — maximum blazer/trouser combinations.');
+                if (shoes.filter(s => s.formality === 'formal').length < 1) suggestions.push('Black Oxford or formal leather shoes — interviews and weddings.');
+                if (tops.length && bottoms.length && tops.length * bottoms.length < 6) suggestions.push('More tops or bottoms in neutral colors (navy, grey, beige) multiply outfit count quickly.');
+                if (!itemsCache.some(i => i.category === 'blazer/suit')) suggestions.push('Blazer — bridges casual shirts to office-ready outfits.');
+
+                const counts = `You have ${tops.length} tops, ${bottoms.length} bottoms, ${shoes.length} footwear → ~${tops.length * Math.max(bottoms.length, 1)} Western combos (excluding traditional sets).`;
+
+                el.innerHTML = `<p>${escapeHtml(counts)}</p><ul class="compact">${suggestions.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+            }
+
+            function renderColorPrefs() {
+                const box = document.getElementById('colorPrefChips');
+                const loved = new Set(meta.lovedColors || []);
+                const avoid = new Set(meta.avoidColors || []);
+                const colorMap = { navy: '#1e3a5f', black: '#111', white: '#f5f5f5', grey: '#888', beige: '#d4c4a8', olive: '#556b2f', brown: '#6b4423', maroon: '#722', cream: '#fffdd0', blue: '#2563eb', green: '#15803d', red: '#dc2626', yellow: '#eab308', orange: '#ea580c', pink: '#db2777', purple: '#7c3aed' };
+
+                box.innerHTML = BASE_COLORS.map(c => {
+                    let state = '';
+                    if (loved.has(c)) state = '✓';
+                    if (avoid.has(c)) state = '✗';
+                    return `<button type="button" class="color-chip ${loved.has(c) || avoid.has(c) ? 'selected' : ''}" data-color="${c}" title="${c}" style="background:${colorMap[c] || '#666'}">${state ? `<span style="font-size:10px;color:#fff;text-shadow:0 0 2px #000">${state}</span>` : ''}</button>`;
+                }).join('');
+
+                box.querySelectorAll('.color-chip').forEach(chip => {
+                    chip.onclick = () => {
+                        const c = chip.dataset.color;
+                        meta.lovedColors = meta.lovedColors || [];
+                        meta.avoidColors = meta.avoidColors || [];
+                        const li = meta.lovedColors.indexOf(c);
+                        const ai = meta.avoidColors.indexOf(c);
+                        if (li >= 0) meta.lovedColors.splice(li, 1);
+                        else if (ai >= 0) meta.avoidColors.splice(ai, 1);
+                        else meta.lovedColors.push(c);
+                        saveMeta();
+                        renderColorPrefs();
+                    };
+                    chip.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        const c = chip.dataset.color;
+                        meta.lovedColors = (meta.lovedColors || []).filter(x => x !== c);
+                        if (!meta.avoidColors) meta.avoidColors = [];
+                        if (!meta.avoidColors.includes(c)) meta.avoidColors.push(c);
+                        else meta.avoidColors = meta.avoidColors.filter(x => x !== c);
+                        saveMeta();
+                        renderColorPrefs();
+                    };
+                });
+            }
+
+
+            // ═══════ v2: storage layer, try-on, suggestions ═══════
+            const $ = id => document.getElementById(id);
+            const IMGLY_URL = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm';
+            const LAYERS = ['bottom', 'shoes', 'top', 'outer', 'head'];
+            const PICK_ORDER = ['head', 'outer', 'top', 'bottom', 'shoes'];
+            const LNAME = { top: 'Top', bottom: 'Bottom', outer: 'Outerwear (waistcoat / coat)', head: 'Headwear', shoes: 'Shoes' };
+            let userPhoto = null, photoImg = null, pending = 0, persisted = false;
+            let tSel = {}, active = null, drag = null, saveT = null;
+            const imgs = new Map();
+
+            // --- IndexedDB key-value store (photo, settings/meta) ---
+            function kvTx(mode, fn) {
+                return new Promise((res, rej) => {
+                    const tx = db.transaction('kv', mode); let out;
+                    const r = fn(tx.objectStore('kv'));
+                    if (r) r.onsuccess = () => { out = r.result; };
+                    tx.oncomplete = () => res(out);
+                    tx.onerror = tx.onabort = () => rej(tx.error);
+                });
+            }
+            const kvGet = k => kvTx('readonly', s => s.get(k)).then(r => r ? r.value : undefined);
+            const kvPut = (k, v) => kvTx('readwrite', s => s.put({ key: k, value: v }));
+            const kvClear = () => kvTx('readwrite', s => s.clear());
+
+            function setStatus(st, msg) {
+                const el = $('saveStatus'); if (!el) return;
+                el.className = 'status-pill ' + (st === 'ok' ? '' : st);
+                el.querySelector('span').textContent = st === 'busy' ? 'Saving…' : st === 'err' ? 'Not saved!' : 'Saved on this device';
+                el.title = msg || (persisted ? 'Persistent storage granted: the browser will not clear this data automatically.' : 'Saved in IndexedDB. Persistent storage not granted, so keep a backup (Settings → Export).');
+            }
+            function toast(m, ms = 5000) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), ms); }
+            function friendlyError(e) {
+                const n = e && e.name;
+                if (n === 'QuotaExceededError') return 'Storage is full. Delete some items or photos, or export a backup and free space.';
+                if (n === 'SecurityError' || n === 'InvalidStateError' || n === 'NotAllowedError') return 'Browser storage is blocked (private mode or site settings). Changes will NOT be saved.';
+                return 'Could not save: ' + ((e && e.message) || e);
+            }
+            function trackWrite(p) {
+                pending++; setStatus('busy');
+                return p.then(v => { if (!--pending) setStatus('ok'); return v; },
+                    e => { pending--; const m = friendlyError(e); setStatus('err', m); toast(m, 8000); throw e; });
+            }
+            async function updateStorageInfo() {
+                const el = $('storageInfo'); if (!el) return;
+                let t = persisted ? 'Persistent storage: granted ✓' : 'Persistent storage: not granted. Export a backup regularly.';
+                try { const e = await navigator.storage.estimate(); t += ` · Used ${(e.usage / 1048576).toFixed(1)} MB of about ${Math.round(e.quota / 1048576)} MB`; } catch { }
+                el.textContent = t;
+            }
+            async function initStorageLayer() {
+                try { if (navigator.storage && navigator.storage.persist) { persisted = await navigator.storage.persisted(); if (!persisted) persisted = await navigator.storage.persist(); } } catch { }
+                try { const m = await kvGet('meta'); if (m) meta = m; else await kvPut('meta', meta); } catch (e) { toast(friendlyError(e)); }
+                try { const p = await kvGet('userPhoto'); if (p) await setPhoto(p, false); } catch { }
+                setStatus('ok'); updateStorageInfo();
+            }
+            async function wipeKV() { await kvClear(); userPhoto = null; photoImg = null; tSel = {}; active = null; refreshTry(); showPhotoGate(); }
+
+            // --- Backup (JSON, images as base64) ---
+            async function exportBackup() {
+                const payload = { app: 'my-smart-wardrobe', version: 2, exportedAt: new Date().toISOString(), photo: (await kvGet('userPhoto')) || null, items: await dbGetAll(), meta };
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+                a.download = `my-smart-wardrobe-backup-${Date.now()}.json`; a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+            }
+            async function importBackup(file) {
+                let data;
+                try { data = JSON.parse(await file.text()); } catch { throw new Error('This file is not a valid backup (it could not be read as JSON).'); }
+                if (!data || !Array.isArray(data.items)) throw new Error('Invalid backup: no wardrobe items found.');
+                if (!confirm('Importing replaces your current wardrobe data. Continue? (Tip: export a backup first.)')) return;
+                await dbClear();
+                for (const it of data.items) await dbPut(it);
+                if (data.photo && data.photo.dataUrl) { await trackWrite(kvPut('userPhoto', data.photo)); await setPhoto(data.photo, false); }
+                if (data.meta) { meta = { ...meta, ...data.meta }; saveMeta(); }
+                await refreshItems(); renderFavorites(); renderHistory(); renderColorPrefs(); refreshTry();
+                toast('Backup restored.');
+            }
+
+            // --- Photo ---
+            const loadImg = u => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = u; });
+            async function setPhoto(p, save) {
+                photoImg = await loadImg(p.dataUrl); userPhoto = p;
+                if (save) await trackWrite(kvPut('userPhoto', p));
+                const cv = $('tryCanvas'); cv.width = 720; cv.height = Math.round(720 * photoImg.height / photoImg.width);
+                const th = $('photoThumb'); th.src = p.dataUrl; th.style.display = 'block';
+                refreshTry();
+            }
+            function showPhotoGate() {
+                if ($('photoGate')) return;
+                const g = document.createElement('div'); g.id = 'photoGate'; g.className = 'modal-backdrop'; g.style.zIndex = 300;
+                g.innerHTML = `<div class="modal"><h2>${userPhoto ? 'Change my photo' : 'Add your photo (one time)'}</h2>
+                <ul class="compact"><li>Stand straight, arms a little away from your body.</li><li>Good light: face a window, no harsh shadows.</li><li>Plain background, full body from head to shoes.</li><li>Hold the phone at chest height, a few steps back.</li></ul>
+                <p class="privacy">🔒 Saved only on this device. Never uploaded unless you enable the optional AI try-on.</p>
+                <label>Upload a photo</label><input type="file" id="gUp" accept="image/*" />
+                <label>Or take one with the camera</label><input type="file" id="gCam" accept="image/*" capture="user" />
+                <div class="modal-actions"><button type="button" class="btn secondary" id="gSkip">${userPhoto ? 'Cancel' : 'Maybe later'}</button></div></div>`;
+                document.body.appendChild(g);
+                const done = async e => {
+                    const f = e.target.files[0]; if (!f) return;
+                    try { await setPhoto({ dataUrl: await compressImage(f, 900, 0.85), savedAt: Date.now() }, true); g.remove(); toast('Photo saved on this device.'); }
+                    catch (er) { toast('Could not use that photo: ' + (er.message || er)); }
+                };
+                $('gUp').onchange = done; $('gCam').onchange = done; $('gSkip').onclick = () => g.remove();
+            }
+
+            // --- Background removal: AI in browser, canvas fallback ---
+            const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+            async function simpleCut(file) {
+                const bmp = await createImageBitmap(file), k = Math.min(1, 600 / bmp.width);
+                const w = Math.round(bmp.width * k), h = Math.round(bmp.height * k);
+                const c = document.createElement('canvas'); c.width = w; c.height = h;
+                const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(bmp, 0, 0, w, h);
+                const img = x.getImageData(0, 0, w, h), p = img.data;
+                let r = 0, g = 0, b = 0, n = 0;
+                const add = i => { r += p[i]; g += p[i + 1]; b += p[i + 2]; n++; };
+                for (let X = 0; X < w; X++) { add(X * 4); add(((h - 1) * w + X) * 4); }
+                for (let Y = 0; Y < h; Y++) { add(Y * w * 4); add((Y * w + w - 1) * 4); }
+                r /= n; g /= n; b /= n;
+                const seen = new Uint8Array(w * h), st = [];
+                const push = (X, Y) => { const q = Y * w + X; if (!seen[q] && Math.hypot(p[q * 4] - r, p[q * 4 + 1] - g, p[q * 4 + 2] - b) < 55) { seen[q] = 1; st.push(q); } };
+                for (let X = 0; X < w; X++) { push(X, 0); push(X, h - 1); }
+                for (let Y = 0; Y < h; Y++) { push(0, Y); push(w - 1, Y); }
+                while (st.length) { const q = st.pop(), X = q % w, Y = (q / w) | 0; if (X > 0) push(X - 1, Y); if (X < w - 1) push(X + 1, Y); if (Y > 0) push(X, Y - 1); if (Y < h - 1) push(X, Y + 1); }
+                for (let q = 0; q < seen.length; q++) if (seen[q]) p[q * 4 + 3] = 0;
+                x.putImageData(img, 0, 0); return c;
+            }
+            function finalizeCutout(srcImg, maxW) {
+                const k = Math.min(1, maxW / srcImg.width), w = Math.round(srcImg.width * k), h = Math.round(srcImg.height * k);
+                const c = document.createElement('canvas'); c.width = w; c.height = h;
+                const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(srcImg, 0, 0, w, h);
+                const d = x.getImageData(0, 0, w, h).data; let x0 = w, y0 = h, x1 = 0, y1 = 0;
+                for (let Y = 0; Y < h; Y++) for (let X = 0; X < w; X++) if (d[(Y * w + X) * 4 + 3] > 16) { if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y; }
+                if (x1 <= x0 || y1 <= y0) return c.toDataURL('image/png');
+                const o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
+                o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+                return o.toDataURL('image/png');
+            }
+            async function makeCutout(file, say = () => { }) {
+                let out;
+                try {
+                    say('Removing background with AI (first use downloads a model, needs internet)…');
+                    const mod = await withTimeout(import(IMGLY_URL), 30000);
+                    const blob = await withTimeout(mod.removeBackground(file, { output: { format: 'image/png' } }), 150000);
+                    out = await createImageBitmap(blob); say('Background removed ✓');
+                } catch (err) {
+                    console.warn('AI cut-out unavailable', err);
+                    say('AI cut-out unavailable. Used simple removal (best on a plain, light background).');
+                    out = await simpleCut(file);
+                }
+                return finalizeCutout(out, 700);
+            }
+
+            // --- Try-on canvas ---
+            const byId = id => itemsCache.find(i => i.id === id);
+            const srcOf = it => it && (it.cutout || it.photo);
+            const ikey = it => it.id + ':' + (srcOf(it) || '').length;
+            async function ensure(it) { if (!imgs.has(ikey(it))) imgs.set(ikey(it), await loadImg(srcOf(it))); return imgs.get(ikey(it)); }
+            function layerOf(it) {
+                const c = it.category;
+                if (BOTTOM_CATS.includes(c)) return 'bottom';
+                if (c === 'waistcoat' || c === 'blazer/suit') return 'outer';
+                if (HEADWEAR.includes(c)) return 'head';
+                if (FOOTWEAR.includes(c)) return 'shoes';
+                return ACCESSORY.includes(c) ? null : 'top';
+            }
+            function pos(it) {
+                if (!it.tryon) {
+                    const l = layerOf(it);
+                    const d = { top: [.5, .36, .56], bottom: [.5, .7, .42], outer: [.5, .37, .6], head: [.5, .09, .24], shoes: [.5, .93, .38] }[l];
+                    const full = ['shalwar kameez', 'sherwani', 'kurta'].includes(it.category);
+                    it.tryon = full ? { x: .5, y: .5, w: .62, rot: 0 } : { x: d[0], y: d[1], w: d[2], rot: 0 };
+                }
+                return it.tryon;
+            }
+            const activeItem = () => active && byId(tSel[active]);
+            function paint() {
+                const cv = $('tryCanvas'); if (!photoImg) return;
+                const x = cv.getContext('2d'), W = cv.width, H = cv.height;
+                x.clearRect(0, 0, W, H); x.drawImage(photoImg, 0, 0, W, H);
+                LAYERS.forEach(l => {
+                    const it = byId(tSel[l]), im = it && imgs.get(ikey(it)); if (!im) return;
+                    const q = pos(it), w = q.w * W, h = w * im.height / im.width;
+                    x.save(); x.translate(q.x * W, q.y * H); x.rotate(q.rot * Math.PI / 180); x.drawImage(im, -w / 2, -h / 2, w, h);
+                    if (l === active) { x.setLineDash([8, 6]); x.strokeStyle = '#2dd4bf'; x.lineWidth = 2; x.strokeRect(-w / 2, -h / 2, w, h); }
+                    x.restore();
+                });
+            }
+            async function refreshTry() {
+                if (!$('tryWrap')) return;
+                $('noPhoto').classList.toggle('hidden', !!photoImg); $('tryWrap').classList.toggle('hidden', !photoImg);
+                renderPicker();
+                try { await Promise.all(LAYERS.map(l => { const it = byId(tSel[l]); return it && srcOf(it) ? ensure(it) : 0; })); } catch { toast('An item image could not be loaded.'); }
+                paint(); updateCtl(); renderSuggestion();
+            }
+            function renderPicker() {
+                const box = $('picker'); if (!box) return;
+                const ev = $('tryEvent'), evs = getEventsList();
+                if (ev.options.length !== evs.length) { const cur = ev.value; ev.innerHTML = evs.map(e => `<option>${escapeHtml(e)}</option>`).join(''); if (cur) ev.value = cur; }
+                box.innerHTML = PICK_ORDER.map(l => {
+                    const list = itemsCache.filter(i => layerOf(i) === l);
+                    return `<div class="layer-row"><b>${LNAME[l]}</b><div class="chip-row">${list.length ? list.map(i => `<button type="button" class="pick ${tSel[l] === i.id ? 'on' : ''} ${srcOf(i) ? '' : 'dim'}" data-pick="${i.id}">${escapeHtml(i.name)}${srcOf(i) ? '' : ' (no photo)'}</button>`).join('') : '<span class="privacy">none yet</span>'}</div></div>`;
+                }).join('');
+            }
+            function updateCtl() {
+                const it = activeItem(); $('itemCtl').classList.toggle('hidden', !it); if (!it) return;
+                const q = pos(it); $('ctlName').textContent = it.name; $('ctlSize').value = Math.round(q.w * 100); $('ctlRot').value = Math.round(q.rot);
+            }
+            function savePos() { clearTimeout(saveT); saveT = setTimeout(() => { const it = activeItem(); if (it) dbPut(it).catch(() => { }); }, 300); }
+            function previewIds(ids, ev, keep) {
+                if (!keep) tSel = {};
+                ids.forEach(id => { const it = byId(id), l = it && layerOf(it); if (l) { tSel[l] = id; active = l; } });
+                if (ev && [...$('tryEvent').options].some(o => o.value === ev)) $('tryEvent').value = ev;
+                document.querySelector('nav.tabs button[data-tab="tryon"]').click();
+                if (!photoImg) showPhotoGate();
+                const miss = ids.filter(id => { const it = byId(id); return it && layerOf(it) && !srcOf(it); }).length;
+                if (miss) toast(`${miss} item(s) have no photo, so they are not shown. Add photos via Wardrobe → Edit.`);
+                refreshTry();
+            }
+
+            // --- Written suggestions (rule-based; swap in AITextModule for smarter text) ---
+            const SKIN = {
+                fair: { good: ['navy', 'maroon', 'olive', 'grey', 'blue', 'green'], low: ['cream', 'beige'] },
+                wheatish: { good: ['navy', 'maroon', 'olive', 'white', 'cream', 'green', 'blue'], low: ['beige', 'brown'] },
+                medium: { good: ['white', 'cream', 'navy', 'olive', 'maroon', 'blue', 'orange'], low: ['brown', 'beige'] },
+                brown: { good: ['white', 'cream', 'blue', 'yellow', 'green', 'orange', 'maroon'], low: ['brown', 'black'] },
+                deep: { good: ['white', 'cream', 'yellow', 'orange', 'blue', 'green', 'red', 'pink'], low: ['black', 'navy', 'brown'] }
+            };
+            function ruleSuggestion(sel, event, season, casual) {
+                const pcs = Object.values(sel);
+                if (!pcs.length) return { lines: ['Pick an item on the right to see tips for it.'], why: '' };
+                const rule = EVENT_RULES[event] || { formality: ['casual', 'smart casual', 'formal', 'traditional'] }, L = [];
+                const face = sel.top || sel.outer || sel.head || pcs[0], fc = normalizeColor(face.color), sk = SKIN[meta.skinTone];
+                const cols = pcs.map(p => p.color).filter(Boolean), hm = harmonyNotes(cols);
+                if (sk) L.push(sk.good.includes(fc) ? [1, `Colour: ${fc} suits your ${meta.skinTone} skin tone well.`]
+                    : sk.low.includes(fc) ? [2, `Colour: ${fc} is low contrast with your ${meta.skinTone} skin tone. Add a lighter or brighter piece near your face.`]
+                        : [1, `Colour: ${fc || 'this colour'} is a safe choice for your skin tone.`]);
+                else L.push([1, `Colour: ${fc || 'this colour'} is easy to match. Set your skin tone in Settings for personal colour advice.`]);
+                hm.warnings.forEach(w => L.push([2, 'Colour: ' + w]));
+                const fits = pcs.map(p => p.fit).filter(Boolean);
+                if (fits.includes('slim')) L.push([2, 'Fit: one piece is slim fit. You prefer relaxed, so size up or pick a looser piece.']);
+                else if (fits.length && fits.every(f => f === 'relaxed')) L.push([1, 'Fit: relaxed fit, comfortable and easy to move in.']);
+                else L.push([1, 'Fit: check it feels loose at the chest and waist. This preview is only approximate.']);
+                if (sel.top) L.push([1, 'Tuck: ' + tuckRecommendation(event, sel.top, sel.bottom, casual)]);
+                const formalEv = ['interview', 'office', 'funeral', 'wedding (baraat)', 'wedding (walima)'].includes(event);
+                const shoeTip = formalEv ? 'black Oxford shoes' : rule.traditional ? 'Peshawari sandals or loafers' : 'clean sneakers or loafers';
+                const hs = hatSuggestion(event, sel.head ? [sel.head] : [], cols);
+                let foot = sel.shoes ? (formalityScore(sel.shoes.formality, rule.formality) < .8 ? `Shoes: ${sel.shoes.name} is off for ${event}; try ${shoeTip}.` : `Shoes: ${sel.shoes.name} works for ${event}.`) : `Shoes: try ${shoeTip}.`;
+                foot += ' ' + (sel.head ? (hs.hat ? `${sel.head.name} works as headwear.` : `A hat is not expected at ${event}; consider skipping it.`) : hs.text);
+                L.push([1, foot]);
+                const fs = pcs.reduce((a, p) => a + formalityScore(p.formality, rule.formality), 0) / pcs.length;
+                const ss = pcs.reduce((a, p) => a + seasonMatch(p.season, season), 0) / pcs.length;
+                const bad = [];
+                if (fs < .75) bad.push(`the dress level is not ideal for ${event}`);
+                if (ss < .6) bad.push(season === 'winter' ? 'it may feel too light for the cold' : 'it may feel too heavy for the heat');
+                culturalWarnings(event, sel.top || sel.outer, sel.bottom, sel.shoes).forEach(w => bad.push(w.replace(/\.$/, '')));
+                L.push(bad.length ? [3, 'Suitability: ' + bad.join('; ') + '.'] : [1, `Suitability: good for ${event}, ${season} weather and local culture.`]);
+                const lines = L.map((x, i) => ({ p: x[0], i, t: x[1] })).sort((a, b) => b.p - a.p || a.i - b.i).slice(0, 4).sort((a, b) => a.i - b.i).map(x => x.t);
+                return { lines, why: hm.notes[0] || `The pieces match the ${rule.formality[0]} level expected for ${event}.` };
+            }
+            async function renderSuggestion() {
+                const box = $('suggestBox'); if (!box) return;
+                const sel = {}; LAYERS.forEach(l => { const it = byId(tSel[l]); if (it) sel[l] = it; });
+                const ev = $('tryEvent').value;
+                let r = ruleSuggestion(sel, ev, getEffectiveSeason(), $('casualLookMode') && $('casualLookMode').checked);
+                if (AI_CONFIG.textEnabled) { try { r = await AITextModule.improve(r, { sel, event: ev }); } catch { } }
+                box.innerHTML = `<strong>Suggestion</strong><ul class="compact">${r.lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>${r.why ? `<div class="ok-box"><strong>Why this works:</strong> ${escapeHtml(r.why)}</div>` : ''}`;
+            }
+
+            // ═══════ OPTIONAL AI MODULE (off by default) ═══════
+            // To enable: set tryOnEnabled / textEnabled to true and fill in the endpoint + key.
+            // WARNING: with no backend, a key placed here is visible to anyone who can open this page. Use it for private/personal use only.
+            // Adjust the request/response shape below to match your provider.
+            const AI_CONFIG = { tryOnEnabled: false, tryOnEndpoint: '', tryOnApiKey: '', textEnabled: false, textEndpoint: '', textApiKey: '' };
+            const AITryOn = {
+                async run(person, garment, category) {
+                    const r = await fetch(AI_CONFIG.tryOnEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + AI_CONFIG.tryOnApiKey }, body: JSON.stringify({ person_image: person, garment_image: garment, category }) });
+                    if (!r.ok) throw new Error('AI service error ' + r.status);
+                    const j = await r.json(); return j.image || j.output || j.result_url;
+                }
+            };
+            const AITextModule = {   // receives only item names/colours/categories, never your photo
+                async improve(rules, ctx) {
+                    const r = await fetch(AI_CONFIG.textEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + AI_CONFIG.textApiKey }, body: JSON.stringify({ rules, event: ctx.event, items: Object.values(ctx.sel).map(i => ({ name: i.name, color: i.color, category: i.category })) }) });
+                    const j = await r.json(); return j.lines ? { lines: j.lines.slice(0, 4), why: j.why || rules.why } : rules;
+                }
+            };
+
+            // --- Wire up ---
+            function initTryOn() {
+                const cv = $('tryCanvas');
+                const norm = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }; };
+                const hit = p => {
+                    const W = cv.width, H = cv.height;
+                    for (const l of [...LAYERS].reverse()) {
+                        const it = byId(tSel[l]), im = it && imgs.get(ikey(it)); if (!im) continue;
+                        const q = pos(it), a = -q.rot * Math.PI / 180, dx = (p.x - q.x) * W, dy = (p.y - q.y) * H;
+                        const lx = dx * Math.cos(a) - dy * Math.sin(a), ly = dx * Math.sin(a) + dy * Math.cos(a), w = q.w * W, h = w * im.height / im.width;
+                        if (Math.abs(lx) <= w / 2 && Math.abs(ly) <= h / 2) return l;
+                    }
+                    return null;
+                };
+                cv.onpointerdown = e => {
+                    const p = norm(e), l = hit(p);
+                    if (l) { active = l; const q = pos(activeItem()); drag = { ox: p.x - q.x, oy: p.y - q.y }; cv.setPointerCapture(e.pointerId); } else active = null;
+                    updateCtl(); paint();
+                };
+                cv.onpointermove = e => { if (!drag) return; const p = norm(e), q = pos(activeItem()); q.x = Math.min(1, Math.max(0, p.x - drag.ox)); q.y = Math.min(1, Math.max(0, p.y - drag.oy)); paint(); };
+                cv.onpointerup = cv.onpointercancel = () => { if (drag) { drag = null; savePos(); } };
+                cv.onwheel = e => {
+                    const it = activeItem(); if (!it) return; e.preventDefault(); const q = pos(it);
+                    if (e.shiftKey) q.rot += e.deltaY > 0 ? 3 : -3; else q.w = Math.min(1.2, Math.max(.05, q.w * (e.deltaY > 0 ? .96 : 1.04)));
+                    updateCtl(); paint(); savePos();
+                };
+                $('ctlSize').oninput = e => { const it = activeItem(); if (it) { pos(it).w = e.target.value / 100; paint(); savePos(); } };
+                $('ctlRot').oninput = e => { const it = activeItem(); if (it) { pos(it).rot = +e.target.value; paint(); savePos(); } };
+                $('ctlReset').onclick = () => { const it = activeItem(); if (it) { it.tryon = null; updateCtl(); paint(); savePos(); } };
+                $('ctlBg').onclick = async () => {
+                    const it = activeItem(); if (!it || !it.photo) return; $('ctlBg').disabled = true;
+                    try { it.cutout = await makeCutout(await (await fetch(it.photo)).blob(), m => { $('ctlMsg').textContent = m; }); await dbPut(it); await refreshTry(); }
+                    catch (er) { toast('Could not remove background: ' + (er.message || er)); }
+                    $('ctlBg').disabled = false;
+                };
+                $('picker').addEventListener('click', e => {
+                    const b = e.target.closest('[data-pick]'); if (!b) return;
+                    const it = byId(b.dataset.pick), l = layerOf(it);
+                    if (!srcOf(it)) { toast('Add a photo to this item first (Wardrobe → Edit).'); return; }
+                    if (tSel[l] === it.id) { delete tSel[l]; if (active === l) active = null; } else { tSel[l] = it.id; active = l; }
+                    refreshTry();
+                });
+                $('itemGrid').addEventListener('click', e => { const b = e.target.closest('[data-try]'); if (b) previewIds([b.dataset.try], null, true); });
+                $('outfitResults').addEventListener('click', e => { const b = e.target.closest('[data-tryon]'); if (b) previewIds(JSON.parse(b.dataset.tryon), b.dataset.ev); });
+                $('btnClearTry').onclick = () => { tSel = {}; active = null; refreshTry(); };
+                $('btnSaveTry').onclick = () => {
+                    if (!Object.keys(tSel).length) { toast('Pick some items first.'); return; }
+                    meta.favorites = meta.favorites || [];
+                    meta.favorites.push({ id: uid(), savedAt: Date.now(), event: $('tryEvent').value, name: 'Try-on outfit', top: tSel.top, bottom: tSel.bottom, shoe: tSel.shoes, layer: tSel.outer, head: tSel.head });
+                    saveMeta(); renderFavorites(); toast('Outfit saved.');
+                };
+                ['btnChangePhoto', 'btnChangePhoto2', 'btnAddPhoto'].forEach(id => { $(id).onclick = showPhotoGate; });
+                $('tryEvent').onchange = renderSuggestion;
+                ['weatherOverride', 'casualLookMode'].forEach(id => $(id).addEventListener('change', renderSuggestion));
+                $('skinTone').value = meta.skinTone || '';
+                $('skinTone').onchange = e => { meta.skinTone = e.target.value; saveMeta(); renderSuggestion(); };
+                $('aiState').textContent = AI_CONFIG.tryOnEnabled ? 'on. Your photo is sent to the service you configured.' : 'off (enable it in the AI_CONFIG block in the code). Your photo never leaves this device.';
+                $('btnAI').disabled = !AI_CONFIG.tryOnEnabled;
+                $('btnAI').onclick = async () => {
+                    const it = activeItem() || byId(tSel.top || tSel.outer || tSel.bottom);
+                    if (!it || !userPhoto) { toast('Pick an item and add your photo first.'); return; }
+                    if (!confirm('This sends your photo and the clothing image to the AI service you configured. Continue?')) return;
+                    try { const u = await AITryOn.run(userPhoto.dataUrl, srcOf(it), layerOf(it)); const im = $('aiResult'); im.src = u; im.style.display = 'block'; }
+                    catch (er) { toast('AI try-on failed: ' + er.message); }
+                };
+                refreshTry();
+                if (!userPhoto) showPhotoGate();
+                if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });
+            }
+
+            // ——— Init ———
+            document.querySelectorAll('nav.tabs button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+                });
+            });
+
+            document.getElementById('themeToggle').onclick = () => {
+                setTheme(meta.theme === 'dark' ? 'light' : 'dark');
+            };
+
+            ['searchItems', 'filterCategory', 'filterColor', 'filterFormality', 'filterOccasion'].forEach(id => {
+                document.getElementById(id).addEventListener('input', renderWardrobe);
+                document.getElementById(id).addEventListener('change', renderWardrobe);
+            });
+
+            document.getElementById('btnAddItem').onclick = () => openItemModal(null);
+            document.getElementById('btnSuggest').onclick = () => {
+                const event = document.getElementById('eventSelect').value;
+                renderOutfitResults(buildOutfits(event));
+            };
+
+            document.getElementById('btnAddCustomEvent').onclick = () => {
+                const v = document.getElementById('customEventInput').value.trim();
+                if (!v) return;
+                meta.customEvents = meta.customEvents || [];
+                if (!meta.customEvents.includes(v)) meta.customEvents.push(v);
+                EVENT_RULES[v] = { formality: ['casual', 'smart casual', 'formal', 'traditional'] };
+                saveMeta();
+                document.getElementById('customEventInput').value = '';
+                populateSelects();
+            };
+
+            document.getElementById('btnExport').onclick = exportBackup;
+            document.getElementById('btnExport2').onclick = exportBackup;
+            document.getElementById('btnImport').onclick = () => document.getElementById('importFile').click();
+            document.getElementById('btnImport2').onclick = () => document.getElementById('importFile').click();
+            document.getElementById('importFile').onchange = (e) => {
+                const f = e.target.files[0];
+                if (f) importBackup(f).catch(err => alert(err.message));
+                e.target.value = '';
+            };
+
+            document.getElementById('btnClearSample').onclick = () => {
+                if (confirm('Remove only the 15 pre-loaded sample items?')) clearSampleDataOnly();
+            };
+
+            document.getElementById('btnRefreshGaps').onclick = renderGaps;
+
+            document.getElementById('btnWipeAll').onclick = async () => {
+                if (!confirm('Delete ALL wardrobe data and photos from this browser?')) return;
+                await dbClear();
+                localStorage.removeItem(LS_KEY);
+                await wipeKV();
+                meta = {};
+                saveMeta();
+                await refreshItems();
+                renderFavorites();
+                renderHistory();
+                renderColorPrefs();
+            };
+
+            openDB().then(async () => {
+                await initStorageLayer();
+                if (!meta.theme) meta.theme = 'light';
+                setTheme(meta.theme);
+                if (!meta.customEvents) meta.customEvents = ['family dinner', 'university day', 'funeral'];
+                saveMeta();
+                await loadSamplesIfNeeded();
+                await refreshItems();
+                renderFavorites();
+                renderHistory();
+                renderColorPrefs();
+                fetchClimate();
+                initTryOn();
+            }).catch(err => { setStatus('err'); alert('Storage is unavailable: ' + err.message + '. Private mode or blocked site data stops saving. Allow storage for this site and reload.'); });
+        })();
+    </script>
+</body>
+
+</html>
